@@ -44,16 +44,16 @@ case EXTRACT(DOW FROM sales.sale_date)
 	WHEN 5 THEN 'friday'
 	WHEN 6 THEN 'saturday'
 end as weekday,
-coalesce(round(sum(sales.quantity*products.price), 0), 0) as average_income
+coalesce(round(sum(sales.quantity*products.price), 0), 0) as income
 from employees
 left join sales on employees.employee_id = sales.sales_person_id
 left join products on products.product_id = sales.product_id 
 group by employees.first_name, employees.last_name, weekday
 )
 
-select name, weekday, average_income
+select name, weekday, income
 from week
-where average_income > '0'
+where income > '0'
 order by case weekday
 	WHEN 'monday' THEN 1
 	WHEN 'tuesday' THEN '2'
