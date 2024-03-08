@@ -63,3 +63,14 @@ order by case weekday
 	WHEN 'saturday' THEN '6'
 	when 'sunday' THEN '7'
 end, name;
+
+Данный запрос выводит количество покупателей в разных возрастных группах: 16-25, 26-40 и 40+:
+select age_category, count(1) from(
+select first_name, last_name, age,
+case 
+when age between 16 and 25 then '16-25'
+when age between 26 and 40 then '26-40'
+when age > 40 then '40+'
+end as age_category
+from customers)a
+group by age_category order by 1;
