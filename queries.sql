@@ -74,3 +74,14 @@ when age > 40 then '40+'
 end as age_category
 from customers)a
 group by age_category order by 1;
+
+
+Данный запрос выводит данные по количеству уникальных покупателей и выручке, которую они принесли:
+SELECT TO_CHAR(sale_date , 'yyyy-MM') as date,
+count(distinct  concat(first_name,' ', last_name))as total_customers,
+round(sum(quantity*price), 0) as income
+FROM customers
+join sales on customers.customer_id = sales.customer_id
+join products on sales.product_id=products.product_id
+group by date
+order by date;
