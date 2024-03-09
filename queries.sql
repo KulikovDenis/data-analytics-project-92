@@ -85,3 +85,22 @@ join sales on customers.customer_id = sales.customer_id
 join products on sales.product_id=products.product_id
 group by date
 order by date;
+
+
+Данный запрос выводит данные о покупателях, первая покупка которых была в ходе проведения акций (акционные товары отпускали со стоимостью равной 0):
+select customer, sale_date, seller from (
+select 
+distinct on(c.customer_id) c.customer_id, 
+concat(c.first_name,' ', c.last_name) as customer, 
+sale_date, 
+sales_id, 
+concat(e.first_name,' ', e.last_name) as seller, 
+p.price 
+from sales s
+join customers c on c.customer_id=s.customer_id
+join products p on s.product_id=p.product_id
+join employees e on s.sales_person_id=e.employee_id
+group by 1,2,3,4,5,6
+having price=0
+order by 1,3
+)a;
