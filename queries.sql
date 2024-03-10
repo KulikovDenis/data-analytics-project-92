@@ -7,8 +7,8 @@ from customers;
 /*Десять лучших продавцов по суммарнной выручке за все время*/
 select
     concat(employees.first_name, ' ', employees.last_name) as seller,
-	count(sales.sale_date) as operations,
-	coalesce(floor(sum(sales.quantity * products.price)), 0) as income
+    count(sales.sale_date) as operations,
+    coalesce(floor(sum(sales.quantity * products.price)), 0) as income
 from employees
 left join sales on employees.employee_id = sales.sales_person_id
 left join products on products.product_id = sales.product_id
