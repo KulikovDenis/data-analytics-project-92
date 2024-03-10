@@ -1,10 +1,10 @@
-Данный запрос считает общее количество покупателей из таблицы customers:
+/*Данный запрос считает общее количество покупателей из таблицы customers*/
 
 select count(customer_id) as customers_count
 from customers;
 
 
-Данный запрос выводит десять лучших продавцов по суммарнной выручке за все время:
+/*Данный запрос выводит десять лучших продавцов по суммарнной выручке за все время*/
 select concat(employees.first_name, ' ', employees.last_name) as seller,
 count(sales.sale_date) AS operations,
 COALESCE(FLOOR(sum(sales.quantity*products.price)), 0) as income
@@ -14,7 +14,7 @@ left join products on products.product_id = sales.product_id
 group by employees.first_name, employees.last_name
 order by income desc limit 10;
 
-Данный запрос выводит информацию о продавцах, чья средняя выручка за сделку меньше средней выручки за сделку по всем продавцам:
+/*Данный запрос выводит информацию о продавцах, чья средняя выручка за сделку меньше средней выручки за сделку по всем продавцам*/
 with av as (
 	select concat(employees.first_name, ' ', employees.last_name) as seller,
 	floor(sum(sales.quantity*products.price)/count(sales.sale_date)) as average_income
@@ -33,7 +33,7 @@ where average_income < (select
 )
 order by average_income;
 
-Данный запрос выводит информацию о выручке по дням недели:
+/*Данный запрос выводит информацию о выручке по дням недели*/
 with tab as(
 select * from (select concat(first_name,' ', last_name) as seller, to_char(sale_date, 'day') as day_of_week, to_char(sale_date, 'ID') as id,
 floor(sum(quantity*price)) as income from employees 
@@ -43,7 +43,7 @@ group by 1, 2, 3) a
 order by 3, seller)
 select seller, day_of_week, income from tab;
 
-Данный запрос выводит количество покупателей в разных возрастных группах: 16-25, 26-40 и 40+:
+/*Данный запрос выводит количество покупателей в разных возрастных группах: 16-25, 26-40 и 40+*/
 select age_category, count(1) as age_count  from(
 select first_name, last_name, age,
 case 
@@ -55,7 +55,7 @@ from customers)a
 group by age_category order by 1;
 
 
-Данный запрос выводит данные по количеству уникальных покупателей и выручке, которую они принесли:
+/*Данный запрос выводит данные по количеству уникальных покупателей и выручке, которую они принесли*/
 SELECT TO_CHAR(sale_date , 'yyyy-MM') as selling_month,
 count(distinct  concat(first_name,' ', last_name))as total_customers,
 floor(sum(quantity*price)) as income
@@ -66,7 +66,7 @@ group by selling_month
 order by selling_month;
 
 
-Данный запрос выводит данные о покупателях, первая покупка которых была в ходе проведения акций (акционные товары отпускали со стоимостью равной 0):
+/*Данный запрос выводит данные о покупателях, первая покупка которых была в ходе проведения акций (акционные товары отпускали со стоимостью равной 0)*/
 select customer, sale_date, seller from (
 select 
 distinct on(c.customer_id) c.customer_id, 
