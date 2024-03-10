@@ -10,29 +10,32 @@ select
     count(sales.sale_date) as operations,
     coalesce(floor(sum(sales.quantity * products.price)), 0) as income
 from employees
-left join sales on employees.employee_id = sales.sales_person_id
+left join sales on sales.sales_person_id = employees.employee_id
 left join products on products.product_id = sales.product_id
 group by employees.first_name, employees.last_name
 order by income desc limit 10;
 
 /*Продавцы, чья ср. выручка сделки меньше ср. выручки сделки по всем продавцам*/
 with av as (
-	select concat(employees.first_name, ' ', employees.last_name) as seller,
-	floor(sum(sales.quantity * products.price) / count(sales.sale_date)) as average_income
-	from employees
-	left join sales on employees.employee_id = sales.sales_person_id
-	left join products on products.product_id = sales.product_id 
-	group by employees.first_name, employees.last_name
+    select
+	    concat(employees.first_name, ' ', employees.last_name) as seller,
+	    floor(sum(sales.quantity * products.price) / count(sales.sale_date)) as average_income
+    from employees
+    left join sales on sales.sales_person_id = employees.employee_id
+    left join products on products.product_id = sales.product_id 
+    group by employees.first_name, employees.last_name
 )
-select *
-from av
-where average_income < (select 
-	floor(sum(sales.quantity * products.price) / count(sales.sale_date)) as average
-	from employees
-	left join sales on employees.employee_id = sales.sales_person_id
-	left join products on products.product_id = sales.product_id
-)
-order by average_income;
+
+    select
+        *
+    from av
+    where average_income < (select 
+	    floor(sum(sales.quantity * products.price) / count(sales.sale_date)) as average
+	    from employees
+	    left join sales on employees.employee_id = sales.sales_person_id
+	    left join products on products.product_id = sales.product_id
+    )
+    order by average_income;
 
 /*Информация о выручке по дням недели*/
 with tab as(
