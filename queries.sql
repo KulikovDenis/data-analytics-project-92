@@ -5,9 +5,10 @@ from customers;
 
 
 /*Данный запрос выводит десять лучших продавцов по суммарнной выручке за все время*/
-select concat(employees.first_name, ' ', employees.last_name) as seller,
-count(sales.sale_date) AS operations,
-COALESCE(FLOOR(sum(sales.quantity*products.price)), 0) as income
+select 
+	concat(employees.first_name, ' ', employees.last_name) as seller,
+	count(sales.sale_date) AS operations,
+	coalesce(floor(sum(sales.quantity*products.price)), 0) as income
 from employees
 left join sales on employees.employee_id = sales.sales_person_id
 left join products on products.product_id = sales.product_id 
@@ -35,7 +36,8 @@ order by average_income;
 
 /*Данный запрос выводит информацию о выручке по дням недели*/
 with tab as(
-select * from (select concat(first_name,' ', last_name) as seller, to_char(sale_date, 'day') as day_of_week, to_char(sale_date, 'ID') as id,
+select *
+from (select concat(first_name,' ', last_name) as seller, to_char(sale_date, 'day') as day_of_week, to_char(sale_date, 'ID') as id,
 floor(sum(quantity*price)) as income from employees 
 join sales on employee_id=sales_person_id
 join products on sales.product_id=products.product_id
@@ -44,7 +46,10 @@ order by 3, seller)
 select seller, day_of_week, income from tab;
 
 /*Данный запрос выводит количество покупателей в разных возрастных группах: 16-25, 26-40 и 40+*/
-select age_category, count(1) as age_count  from(
+select 
+	age_category,
+	count(1) as age_count  
+	from(
 select first_name, last_name, age,
 case 
 when age between 16 and 25 then '16-25'
@@ -56,10 +61,11 @@ group by age_category order by 1;
 
 
 /*Данный запрос выводит данные по количеству уникальных покупателей и выручке, которую они принесли*/
-SELECT TO_CHAR(sale_date , 'yyyy-MM') as selling_month,
-count(distinct  concat(first_name,' ', last_name))as total_customers,
-floor(sum(quantity*price)) as income
-FROM customers
+select 
+	to_char(sale_date , 'yyyy-MM') as selling_month,
+	count(distinct  concat(first_name,' ', last_name))as total_customers,
+	floor(sum(quantity*price)) as income
+from customers
 join sales on customers.customer_id = sales.customer_id
 join products on sales.product_id=products.product_id
 group by selling_month
@@ -67,7 +73,11 @@ order by selling_month;
 
 
 /*Данный запрос выводит данные о покупателях, первая покупка которых была в ходе проведения акций (акционные товары отпускали со стоимостью равной 0)*/
-select customer, sale_date, seller from (
+select 
+	customer,
+	sale_date,
+	seller 
+from (
 select 
 distinct on(c.customer_id) c.customer_id, 
 concat(c.first_name,' ', c.last_name) as customer, 
