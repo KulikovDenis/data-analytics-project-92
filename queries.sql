@@ -38,15 +38,20 @@ with av as (
     order by average_income;
 
 /*Информация о выручке по дням недели*/
-with tab as(
-select *
-from (select concat(first_name,' ', last_name) as seller, to_char(sale_date, 'day') as day_of_week, to_char(sale_date, 'ID') as id,
-floor(sum(quantity*price)) as income from employees 
-join sales on employee_id = sales_person_id
-join products on sales.product_id = products.product_id
-group by 1, 2, 3) a
-order by 3, seller)
-select seller, day_of_week, income from tab;
+with tab as (
+    select *
+    from (
+        select
+        concat(first_name,' ', last_name) as seller, to_char(sale_date, 'day') as day_of_week,
+		to_char(sale_date, 'ID') as id,
+        floor(sum(quantity * price)) as income
+		from employees
+        join sales on employee_id = sales_person_id
+        join products on sales.product_id = products.product_id
+        group by 1, 2, 3) a
+    order by 3, seller)
+select seller, day_of_week, income
+from tab;
 
 /*Количество покупателей в разных возрастных группах*/
 select 
