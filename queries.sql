@@ -47,10 +47,9 @@ with tab as (
             to_char(s.sale_date, 'ID') as id,
             floor(sum(s.quantity * p.price)) as income
         from employees as e
-        join sales as s on e.employee_id = s.sales_person_id
-        join products as p on s.product_id = p.product_id
-        group by
-            1, 2, 3
+        inner join sales as s on e.employee_id = s.sales_person_id
+        inner join products as p on s.product_id = p.product_id
+        group by seller, day_of_week, id
 		) a
     order by
         3, seller
