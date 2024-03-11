@@ -42,16 +42,18 @@ with tab as (
     select *
     from (
         select
-            concat(e.first_name,' ', e.last_name) as seller,
-			to_char(s.sale_date, 'day') as day_of_week,
-		    to_char(s.sale_date, 'ID') as id,
+            concat(e.first_name, ' ', e.last_name) as seller,
+            to_char(s.sale_date, 'day') as day_of_week,
+            to_char(s.sale_date, 'ID') as id,
             floor(sum(s.quantity * p.price)) as income
-        from employees e
-        join sales s on e.employee_id = s.sales_person_id
-        join products p on s.product_id = p.product_id
-        group by 1, 2, 3
+        from employees as e
+        join sales as s on e.employee_id = s.sales_person_id
+        join products as p on s.product_id = p.product_id
+        group by
+            1, 2, 3
 		) a
-    order by 3, seller
+    order by
+        3, seller
 	)
 select seller, day_of_week, income
 from tab;
@@ -60,14 +62,15 @@ from tab;
 select 
 	age_category,
 	count(1) as age_count  
-	from(
+	from (
 select first_name, last_name, age,
 case 
 when age between 16 and 25 then '16-25'
 when age between 26 and 40 then '26-40'
 when age > 40 then '40+'
 end as age_category
-from customers)a
+from customers
+) a
 group by age_category order by 1;
 
 
