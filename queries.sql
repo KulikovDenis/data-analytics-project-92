@@ -109,7 +109,7 @@ from (
     inner join customers as c on s.customer_id = c.customer_id
     inner join products as p on s.product_id = p.product_id
     inner join employees as e on s.sales_person_id = e.employee_id
-    group by c.customer_id, customer, s.sale_date, s.sales_id, seller, p.price
+    group by c.customer_id, s.sale_date, s.sales_id, p.price, seller, customer
     having p.price = 0
     order by c.customer_id, s.sale_date
 );
