@@ -100,11 +100,11 @@ select
 from (
     select
         c.customer_id,
-        concat(c.first_name, ' ', c.last_name) as customer,
         s.sale_date,
         s.sales_id,
-        concat(e.first_name, ' ', e.last_name) as seller,
         p.price
+        concat(e.first_name, ' ', e.last_name) as seller,
+        concat(c.first_name, ' ', c.last_name) as customer,
     from sales as s
     inner join customers as c on s.customer_id = c.customer_id
     inner join products as p on s.product_id = p.product_id
