@@ -35,7 +35,7 @@ with av as (
 	    left join sales on employees.employee_id = sales.sales_person_id
 	    left join products on products.product_id = sales.product_id
     )
-    order by average_income;
+order by average_income;
 
 /*Информация о выручке по дням недели*/
 with tab as (
@@ -50,10 +50,9 @@ with tab as (
         inner join sales as s on e.employee_id = s.sales_person_id
         inner join products as p on s.product_id = p.product_id
         group by seller, day_of_week, id
-		) a
-    order by
-        3, seller
-	)
+    )
+    order by id, seller
+)
 select seller, day_of_week, income
 from tab;
 
