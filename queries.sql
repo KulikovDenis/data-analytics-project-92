@@ -11,7 +11,7 @@ select
     coalesce(floor(sum(sales.quantity * products.price)), 0) as income
 from employees
 left join sales on employees.employee_id = sales.sales_person_id
-left join products on products.product_id = sales.product_id
+left join products on sales.product_id = products.product_id
 group by employees.first_name, employees.last_name
 order by income desc limit 10;
 
@@ -22,7 +22,7 @@ with av as (
         floor(sum(s.quantity * p.price) / count(s.sale_date)) as average_income
     from employees as e
     left join sales as s on e.employee_id = s.sales_person_id
-    left join products as p on p.product_id = s.product_id
+    left join products as p on s.product_id = p.product_id
     group by employees.first_name, employees.last_name
 )
 
@@ -31,11 +31,11 @@ select
 from av
 where
     average_income < (
-        select 
+        select
             floor(sum(s.quantity * p.price) / count(s.sale_date)) as average
         from employees as e
         left join sales as s on e.employee_id = s.sales_person_id
-        left join products as p on p.product_id = s.product_id
+        left join products as p on s.product_id = p.product_id
     )
 order by average_income;
 
@@ -100,18 +100,18 @@ select
     sale_date,
     seller
 from (
-    select 
-        distinct on (c.customer_id) c.customer_id, 
-        concat(c.first_name,' ', c.last_name) as customer, 
-        sale_date, 
-        sales_id, 
-        concat(e.first_name,' ', e.last_name) as seller, 
-        p.price 
-    from sales s
-    inner join customers c on c.customer_id = s.customer_id
-    inner join products p on s.product_id = p.product_id
-    inner join employees e on s.sales_person_id = e.employee_id
-    group by 1, 2, 3, 4, 5, 6
+    select distinct
+        on (c.customer_id) c.customer_id,
+        concat(c.first_name, ' ', c.last_name) as customer,
+        s.sale_date,
+        s.sales_id,
+        concat(e.first_name, ' ', e.last_name) as seller,
+        p.price
+    from sales as s
+    inner join customers as c on s.customer_id = c.customer_id
+    inner join products as p on s.product_id = p.product_id
+    inner join employees as e on s.sales_person_id = e.employee_id
+    group by 1, customer, s.sale_date, s.sales_id, seller, p.price
     having price = 0
-    order by 1, 3
+    order by 1, s.sale_date
 );
