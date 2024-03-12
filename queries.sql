@@ -26,13 +26,11 @@ with av as (
     group by employees.first_name, employees.last_name
 )
 
-select
-    *
+select *
 from av
 where
     average_income < (
-        select
-            floor(sum(s.quantity * p.price) / count(s.sale_date)) as average
+        select floor(sum(s.quantity * p.price) / count(s.sale_date)) as average
         from employees as e
         left join sales as s on e.employee_id = s.sales_person_id
         left join products as p on s.product_id = p.product_id
@@ -100,8 +98,7 @@ select
     sale_date,
     seller
 from (
-    select distinct
-        on (c.customer_id) c.customer_id,
+    select distinct on (c.customer_id) c.customer_id,
         concat(c.first_name, ' ', c.last_name) as customer,
         s.sale_date,
         s.sales_id,
