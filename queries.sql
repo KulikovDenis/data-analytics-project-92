@@ -98,7 +98,8 @@ select
     sale_date,
     seller
 from (
-    select distinct on (c.customer_id) c.customer_id,
+    select distinct on (c.customer_id)
+        c.customer_id,
         concat(c.first_name, ' ', c.last_name) as customer,
         s.sale_date,
         s.sales_id,
@@ -108,7 +109,7 @@ from (
     inner join customers as c on s.customer_id = c.customer_id
     inner join products as p on s.product_id = p.product_id
     inner join employees as e on s.sales_person_id = e.employee_id
-    group by 1, customer, s.sale_date, s.sales_id, seller, p.price
-    having price = 0
-    order by 1, s.sale_date
+    group by c.customer_id, customer, s.sale_date, s.sales_id, seller, p.price
+    having p.price = 0
+    order by c.customer_id, s.sale_date
 );
