@@ -98,7 +98,7 @@ select
     sale_date,
     seller
 from (
-    select distinct on (c.customer_id)
+    select
         c.customer_id,
         concat(c.first_name, ' ', c.last_name) as customer,
         s.sale_date,
