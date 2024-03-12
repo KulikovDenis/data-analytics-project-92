@@ -53,23 +53,30 @@ with tab as (
     )
     order by id, seller
 )
-select seller, day_of_week, income
+select
+    seller,
+    day_of_week,
+    income
 from tab;
 
 /*Количество покупателей в разных возрастных группах*/
-select 
-	age_category,
-	count(1) as age_count  
-	from (
-select first_name, last_name, age,
-case 
-when age between 16 and 25 then '16-25'
-when age between 26 and 40 then '26-40'
-when age > 40 then '40+'
-end as age_category
-from customers
-) a
-group by age_category order by 1;
+select
+    age_category,
+    count(*) as age_count
+from (
+    select
+        first_name,
+        last_name,
+        age,
+        case
+            when age between 16 and 25 then '16-25'
+            when age between 26 and 40 then '26-40'
+            when age > 40 then '40+'
+        end as age_category
+    from customers
+)
+group by age_categor
+order by age_category;
 
 
 /*Количество уникальных покупателей и выручке, которую они принесли*/
